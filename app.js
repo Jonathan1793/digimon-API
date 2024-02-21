@@ -1,22 +1,39 @@
 
-const API = fetch('https://digi-api.com/api/v1/digimon/289');
-const cardContainer = document.querySelector('.card');
+const API = 'https://digi-api.com/api/v1/digimon/';
+const cardContainer = document.querySelector('.cards-container');
 
-const requestData = async () => {
-    API.then(res => {
+const requestData = async (id) => {
+    //console.log(id);
+    const search = await API + id;
+    const values = await fetch(search).then(res => {
+        console.log(search);
         if (!res.ok) {
             throw console.error('no connection made');
         }
         else {
-            res.json().then(digimon => {
-                createCard(digimon.id, digimon.name, digimon.images[0].href, digimon.levels[0].level, digimon.types[0].type);
+            return res.json().then(digimon => {
+                return [digimon.id, digimon.name, digimon.images[0].href, digimon.levels[0].level, digimon.types[0].type];
+
             });
         }
     });
+
+    createCard(...values);
+
 };
+for (i = 1; i < 30; i++) {
+    requestData(i);
+}
+
+const thisIsDumb = async => {
+
+};
+
 
 const createCard = (id, name, img, level, type) => {
     console.log('we are creating card   ');
+    const card = document.createElement('div');
+    card.classList.add('card');
     const digiInfoBottom = document.createElement('div');
     digiInfoBottom.classList.add('digi-info-bottom');
     const digiInfoTop = document.createElement('div');
@@ -34,13 +51,14 @@ const createCard = (id, name, img, level, type) => {
 
 
     //Appending all containers in here
-    cardContainer.appendChild(digiInfoTop);
+    card.appendChild(digiInfoTop);
     digiInfoTop.appendChild(digiId);
     digiInfoTop.appendChild(digiName);
-    cardContainer.appendChild(digiImg);
+    card.appendChild(digiImg);
     digiInfoBottom.appendChild(digilevel);
     digiInfoBottom.appendChild(digiType);
-    cardContainer.appendChild(digiInfoBottom);
+    card.appendChild(digiInfoBottom);
+    cardContainer.appendChild(card);
 };
 
 requestData();

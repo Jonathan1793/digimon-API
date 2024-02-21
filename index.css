@@ -24,10 +24,34 @@ ul {
   gap: 1rem;
 }
 
+.cards-container {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+}
+
 .card {
-  width: 400px;
-  background-color: #f0f;
+  width: 100%;
+  background-color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 0.5px solid black;
+  box-shadow: 10px 10px 5px #115;
+  border-radius: 5%;
+}
+
+.digi-info-top {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.digi-info-top h2,
+h3 {
+}
+
+.card img {
+  width: 100%;
 }
