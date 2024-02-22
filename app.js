@@ -1,36 +1,58 @@
 
 const API = 'https://digi-api.com/api/v1/digimon/';
 const cardContainer = document.querySelector('.cards-container');
+const digimonsArr = [];
 
-const requestData = async (id) => {
+
+const requestData = async (numberOfDigimons = 30, id = 0) => {
     //console.log(id);
-    const search = await API + id;
-    const values = await fetch(search).then(res => {
-        console.log(search);
-        if (!res.ok) {
-            throw console.error('no connection made');
-        }
-        else {
-            return res.json().then(digimon => {
-                return [digimon.id, digimon.name, digimon.images[0].href, digimon.levels[0].level, digimon.types[0].type];
+    console.log(numberOfDigimons);
+    if (numberOfDigimons === 30) {
+        for (i = 1; i < numberOfDigimons + 1; i++) {
+            if (i === 10) {
+                numberOfDigimons++;
+                continue;
 
+            }
+            console.log(i);
+            let search = API + i;
+            await fetch(search).then(res => {
+                console.log(search);
+                if (!res.ok) {
+                    throw console.error('no connection made');
+                }
+                else {
+                    console.log('we are here');
+                    return res.json().then(digimon => {
+                        console.log(digimon.name);
+                        if (digimon.id === undefined || digimon.name === undefined || digimon.images[0].href === undefined || digimon.levels.length === 0 || digimon.types.length === 0) {
+                            numberOfDigimons++;
+                            return;
+                        }
+                        digimonsArr.push([digimon.id, digimon.name, digimon.images[0].href, digimon.levels, digimon.types]);
+
+                    });
+                }
             });
-        }
-    });
 
-    createCard(...values);
+
+        }
+        console.log(digimonsArr);
+        digimonsArr.forEach((element, i) => {
+
+            createCard(...element);
+        });
+    }
 
 };
-for (i = 1; i < 30; i++) {
-    requestData(i);
-}
+
 
 const thisIsDumb = async => {
 
 };
 
 
-const createCard = (id, name, img, level, type) => {
+const createCard = (id, name, img, level = [], type = []) => {
     console.log('we are creating card   ');
     const card = document.createElement('div');
     card.classList.add('card');
@@ -45,9 +67,9 @@ const createCard = (id, name, img, level, type) => {
     const digiImg = document.createElement('img');
     digiImg.setAttribute('src', img);
     const digilevel = document.createElement('p');
-    digilevel.innerHTML = 'Level: ' + level;
+    digilevel.innerHTML = 'Level: ' + ((level[0].level.length > 0) ? level[0].level : 'lol');
     const digiType = document.createElement('h2');
-    digiType.innerHTML = 'Type: ' + type;
+    digiType.innerHTML = 'Type: ' + type[0].type;
 
 
     //Appending all containers in here
@@ -61,4 +83,4 @@ const createCard = (id, name, img, level, type) => {
     cardContainer.appendChild(card);
 };
 
-requestData();
+requestData(30, 30);
