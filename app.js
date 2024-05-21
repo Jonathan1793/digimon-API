@@ -2,29 +2,34 @@
 const API = 'https://digi-api.com/api/v1/digimon/';
 const cardContainer = document.querySelector('.cards-container');
 const digimonsArr = [];
+const loadingBar = document.getElementById('loading-bar');
+const favoriteDigimons = [];
 
-
-const requestData = async (numberOfDigimons = 30, id = 0) => {
+//function that request the data needed form the API using promises
+/*Function requestData() requires two parameters
+ numberOfDigimons that is the total number of digimons that would
+ be requested from the API
+*/
+const requestData = async (numberOfDigimons = 30) => {
     //console.log(id);
     console.log(numberOfDigimons);
-    if (numberOfDigimons === 30) {
+    if (numberOfDigimons > 0) {
         for (i = 1; i < numberOfDigimons + 1; i++) {
-            if (i === 10) {
-                numberOfDigimons++;
-                continue;
-
+            //console.log(i);
+            if (i == numberOfDigimons) {
+                loadingBar.classList.add('hide-loading');
             }
-            console.log(i);
+            //console.log(i);
             let search = API + i;
             await fetch(search).then(res => {
-                console.log(search);
+                //console.log(search);
                 if (!res.ok) {
                     throw console.error('no connection made');
                 }
                 else {
-                    console.log('we are here');
+                    //console.log('we are here');
                     return res.json().then(digimon => {
-                        console.log(digimon.name);
+                        // console.log(digimon.name);
                         if (digimon.id === undefined || digimon.name === undefined || digimon.images[0].href === undefined || digimon.levels.length === 0 || digimon.types.length === 0) {
                             numberOfDigimons++;
                             return;
@@ -37,7 +42,7 @@ const requestData = async (numberOfDigimons = 30, id = 0) => {
 
 
         }
-        console.log(digimonsArr);
+        //console.log(digimonsArr);
         digimonsArr.forEach((element, i) => {
 
             createCard(...element);
@@ -46,8 +51,45 @@ const requestData = async (numberOfDigimons = 30, id = 0) => {
 
 };
 
+/*addToFavorites stores the digimon Clicked from the main page and
+stores them on an array for later use on the display favorites
+function */
+const addToFavorites = (id, digiName) => {
 
-const thisIsDumb = async => {
+    console.log('you clicked on ' + digiName);
+    const digimon = {};
+    digimon.id = id;
+    digimon.name = digiName;
+
+    if (favoriteDigimons.length === 0) {
+        favoriteDigimons.push(digimon);
+    } else {
+        let digimonInArray = favoriteDigimons.find(registeredDigimon => {
+            return registeredDigimon.id === digimon.id;
+        });
+        if (digimonInArray) {
+            window.alert(digiName + ' is already in favorites');
+        } else {
+            favoriteDigimons.push(digimon);
+        }
+    }
+
+    // if (favoriteDigimons.length === 0) {
+    //     favoriteDigimons.push(digimon);
+    // } else {
+    //     favoriteDigimons.forEach(digimonInArray => {
+    //         if (digimonInArray.id === digimon.id) {
+    //             console.log('digimon already in array');
+    //             exisitingDigimon = true;
+    //         }
+    //     });
+    //     if (exisitingDigimon == false) {
+    //         favoriteDigimons.push(digimon);
+    //     }
+    // }
+
+
+    console.log(favoriteDigimons);
 
 };
 
@@ -56,6 +98,7 @@ const createCard = (id, name, img, level = [], type = []) => {
     console.log('we are creating card   ');
     const card = document.createElement('div');
     card.classList.add('card');
+    card.classList.add('make-it-bigger');
     const digiInfoBottom = document.createElement('div');
     digiInfoBottom.classList.add('digi-info-bottom');
     const digiInfoTop = document.createElement('div');
@@ -81,6 +124,9 @@ const createCard = (id, name, img, level = [], type = []) => {
     digiInfoBottom.appendChild(digiType);
     card.appendChild(digiInfoBottom);
     cardContainer.appendChild(card);
+    card.addEventListener('click', () => {
+        addToFavorites(id, name);
+    });
 };
 
-requestData(30, 30);
+requestData();

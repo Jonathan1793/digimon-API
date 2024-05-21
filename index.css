@@ -6,6 +6,22 @@
   font-style: normal;
 }
 
+#loading-bar {
+  width: 50%;
+  margin: 0 auto;
+  background: #ccc;
+  height: 20px;
+  animation: loop 2s infinite;
+  border-radius: 20px 20px 20px 20px;
+  text-align: center;
+}
+.make-it-bigger:active {
+  scale: 1.1;
+}
+.hide-loading {
+  display: none;
+}
+
 a {
   text-decoration: none;
 }
@@ -64,6 +80,7 @@ ul {
 
 .card {
   width: 100%;
+  height: 100%;
   background-color: #fff;
   display: flex;
   flex-direction: column;
@@ -71,6 +88,7 @@ ul {
   border: 0.5px solid black;
   box-shadow: 10px 10px 5px #115;
   border-radius: 5%;
+  justify-content: space-evenly;
 }
 
 .digi-info-top {
@@ -80,10 +98,28 @@ ul {
   text-align: center;
 }
 
-.digi-info-top h2,
-h3 {
+.digi-info-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .card img {
   width: 100%;
+  height: 200px;
+}
+
+@keyframes loop {
+  0% {
+    background-color: #ccc;
+  }
+
+  50% {
+    background-color: #aaa;
+  }
+
+  100% {
+    background-color: #ccc;
+  }
 }
